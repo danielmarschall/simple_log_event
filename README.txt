@@ -92,7 +92,7 @@ Example usage with Delphi
 	  x := CoViaThinkSoftSimpleEventLog.Create;
 	  x.LogEvent('MySourceName', ViaThinkSoftSimpleLogEvent_TLB.Warning, 'This is a test warning written by Delphi');
 	  x := nil;
-	end.
+	end;
 
 
 A short note about the compilation workflow (for developers)
