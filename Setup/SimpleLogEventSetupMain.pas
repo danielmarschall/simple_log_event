@@ -57,9 +57,37 @@ Function Wow64DisableWow64FsRedirection(Var Wow64FsEnableRedirection: LongBool):
 Function Wow64EnableWow64FsRedirection(Wow64FsEnableRedirection: LongBool): LongBool; StdCall;
   External 'Kernel32.dll' Name 'Wow64EnableWow64FsRedirection';
 
+procedure RunAndWaitShell(Executable, Parameter: STRING; ShowParameter: INTEGER);
+var
+  Info: TShellExecuteInfo;
+  pInfo: PShellExecuteInfo;
+  exitCode: DWord;
+begin
+  // Source: https://www.delphipraxis.net/31067-shellexecute-wait.html
+  pInfo := @Info;
+  with Info do
+  begin
+    cbSize := SizeOf(Info);
+    fMask := SEE_MASK_NOCLOSEPROCESS;
+    wnd   := application.Handle;
+    lpVerb := NIL;
+    lpFile := PChar(Executable);
+    lpParameters := PChar(Parameter + #0);
+    lpDirectory := NIL;
+    nShow       := ShowParameter;
+    hInstApp    := 0;
+  end;
+  ShellExecuteEx(pInfo);
+  repeat
+    exitCode := WaitForSingleObject(Info.hProcess, 500);
+    Application.ProcessMessages;
+  until (exitCode <> WAIT_TIMEOUT);
+end;
+
 procedure RegSvr32(const dll: string);
 begin
-  ShellExecute(Form1.Handle, 'open', 'regsvr32.exe', PChar('"' + dll + '"'), '', SW_NORMAL);
+  //ShellExecute(Form1.Handle, 'open', 'regsvr32.exe', PChar('"' + dll + '"'), '', SW_NORMAL);
+  RunAndWaitShell('regsvr32.exe', '"'+dll+'"', SW_NORMAL);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
