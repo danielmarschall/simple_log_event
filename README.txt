@@ -14,13 +14,16 @@ that would show up if you would call the WinAPI function "ReportEvent"
 without MessageTable/Provider.
 
 
-Distribution to the end user (files found in folder "TLB")
+Distribution to the end user
 ----------------------------
 
-Register.bat
-UnRegister.bat
-ViaThinkSoftSimpleLogEvent32.dll
-ViaThinkSoftSimpleLogEvent64.dll
+You only need to deploy SimpleLogEventSetup.exe
+which is located in the folder "Setup".
+
+The EXE file contains everything inside:
+- 32 bit and 64 bit DLL (will be unpacked to target location)
+- Registration procedure for COM/Typelib
+- Registration procedure for SourceNames
 
 
 Installation
@@ -57,7 +60,7 @@ Example usage with VBScript
 	const LOGEVENT_MSG_WARNING       = 2
 	const LOGEVENT_MSG_ERROR         = 3
 
-	objMyObject.LogEvent LOGEVENT_MSG_WARNING, "This is a test warning written by VBS"
+	objMyObject.LogEvent "MySourceName", LOGEVENT_MSG_WARNING, "This is a test warning written by VBS"
 
 
 Example usage with PHP
@@ -71,7 +74,7 @@ Example usage with PHP
 	define('LOGEVENT_MSG_ERROR',         3);
 
 	$x = new COM(CLASS_ViaThinkSoftSimpleEventLog);
-	$x->LogEvent(LOGEVENT_MSG_WARNING, 'This is a test warning written by PHP');
+	$x->LogEvent('MySourceName', LOGEVENT_MSG_WARNING, 'This is a test warning written by PHP');
 
 
 Example usage with Delphi
@@ -81,21 +84,41 @@ Example usage with Delphi
 	  ActiveX,
 	  ViaThinkSoftSimpleLogEvent_TLB;
 
-	const
-	  LOGEVENT_MSG_SUCCESS       = 0;
-	  LOGEVENT_MSG_INFORMATIONAL = 1;
-	  LOGEVENT_MSG_WARNING       = 2;
-	  LOGEVENT_MSG_ERROR         = 3;
-
 	procedure LogTest;
 	var
 	  x: IViaThinkSoftSimpleEventLog;
 	begin
-	  CoInitialize(nil); // <-- only needs to be called once
+	  CoInitialize(nil); // needs to be called only once
 	  x := CoViaThinkSoftSimpleEventLog.Create;
-	  x.LogEvent(LOGEVENT_MSG_WARNING, 'This is a test warning written by Delphi');
+	  x.LogEvent('MySourceName', ViaThinkSoftSimpleLogEvent_TLB.Warning, 'This is a test warning written by Delphi');
 	  x := nil;
 	end.
+
+
+A short note about the compilation workflow (for developers)
+-------------------------------------------
+
+This only applies if you want to change/extend/fork ViaThinkSoftSimpleEventLog yourself.
+You do not need this if you just want to use ViaThinkSoftSimpleEventLog to log events.
+
+1.	In folder "MessageTable":
+	Run "EventlogMessagesCompile.bat", it will do:
+	- MC file => RC+BIN files (using "mc.exe" from Windows SDK)
+	- RC+BIN files => RES file (using "rc.exe")
+	
+2.	In folder "TLB":
+	Compile using Delphi (it will include the MessageTable RES file):
+	- ViaThinkSoftSimpleLogEvent32.dll
+	- ViaThinkSoftSimpleLogEvent64.dll
+
+3.	In folder "Setup":
+	3.1 Run "DllResCompile.bat", it will do:
+	    - RC file => RES file (will include the two DLLs from folder "TLB")
+	3.2 Then, compile SimpleLogEventSetup.exe using Delphi
+
+4.	In folder "LogTestUsingDelphi":
+	Compile LogWriteTestDelphi*.exe using Delphi
+	(it will read "ViaThinkSoftSimpleLogEvent_TLB.pas" from the "TLB" folder)
 
 
 License

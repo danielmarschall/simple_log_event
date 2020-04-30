@@ -1,18 +1,18 @@
 // ************************************************************************ //
-// WARNUNG                                                                    
-// -------                                                                    
-// Diese Datei wird von dem Typbibliotheks-Importer oder dem Typbibliothekseditor 
-// erzeugt. Außer Syntaxfehlern analysiert der Editor an der Datei vorgenommene 
-// Änderungen. Wenn Sie aber Änderungen mit dem Editor vornehmen, wird diese  
-// Datei neu erzeugt und Kommentare oder Formatänderungen gehen verloren.     
+// WARNUNG
+// -------
+// Diese Datei wird von dem Typbibliotheks-Importer oder dem Typbibliothekseditor
+// erzeugt. Außer Syntaxfehlern analysiert der Editor an der Datei vorgenommene
+// Änderungen. Wenn Sie aber Änderungen mit dem Editor vornehmen, wird diese
+// Datei neu erzeugt und Kommentare oder Formatänderungen gehen verloren.
 // ************************************************************************ //
-// Datei erzeugt am 29.04.2020 21:29:52 (- $Rev: 12980 $, 7765620).
+// Datei erzeugt am 30.04.2020 23:03:28 (- $Rev: 12980 $, 10609955).
 
 [
-  uuid(D7654BA7-41D0-4FF9-8543-C3A4DA936856), 
-  version(1.0), 
+  uuid(D7654BA7-41D0-4FF9-8543-C3A4DA936856),
+  version(1.0),
   helpstring("ViaThinkSoftSimpleLogEvent Library")
-    
+
 ]
 library ViaThinkSoftSimpleLogEvent
 {
@@ -24,21 +24,32 @@ library ViaThinkSoftSimpleLogEvent
 
 
   [
-    uuid(4094657E-8199-460F-A3DD-5BB63B6B0F65), 
-    version(1.0), 
-    helpstring("Dispatch interface for ViaThinkSoftSimpleEventLog Object"), 
-    dual, 
+    uuid(7E436E11-889B-4DB6-8530-D3933ED080A2)
+  ]
+  enum LogEventType
+  {
+    Success = 0,
+    Informational = 1,
+    Warning = 2,
+    Error = 3
+  };
+
+  [
+    uuid(4094657E-8199-460F-A3DD-5BB63B6B0F65),
+    version(1.0),
+    helpstring("Dispatch interface for ViaThinkSoftSimpleEventLog Object"),
+    dual,
     oleautomation
   ]
   interface IViaThinkSoftSimpleEventLog: IDispatch
   {
     [id(0x000000C9)]
-    HRESULT _stdcall LogEvent([in] long EventType, [in] BSTR LogMsg);
+    HRESULT _stdcall LogEvent([in] BSTR SourceName, [in] enum LogEventType EventType, [in] BSTR LogMsg);
   };
 
   [
-    uuid(E4270053-A217-498C-B395-9EF33187E8C2), 
-    version(1.0), 
+    uuid(E4270053-A217-498C-B395-9EF33187E8C2),
+    version(1.0),
     helpstring("ViaThinkSoftSimpleEventLog Object")
   ]
   coclass ViaThinkSoftSimpleEventLog

@@ -10,11 +10,9 @@ uses
 type
   TViaThinkSoftSimpleEventLog = class(TAutoObject, IViaThinkSoftSimpleEventLog)
   protected
-    procedure LogEvent(EventType: Integer; const LogMsg: WideString); safecall;
+    procedure LogEvent(const SourceName: WideString; EventType: LogEventType; const LogMsg: WideString);
+          safecall;
   end;
-
-const
-  LOGEVENT_PROVIDER_NAME = 'ViaThinkSoft';
 
 implementation
 
@@ -51,20 +49,18 @@ begin
   end;
 end;
 
-procedure TViaThinkSoftSimpleEventLog.LogEvent(EventType: Integer;
-  const LogMsg: WideString);
+procedure TViaThinkSoftSimpleEventLog.LogEvent(const SourceName: WideString; EventType: LogEventType;
+          const LogMsg: WideString);
 begin
   case EventType of
-    0:
-      WriteEventLog(LOGEVENT_PROVIDER_NAME, EVENTLOG_SUCCESS,          MSG_SUCCESS,       LogMsg);
-    1:
-      WriteEventLog(LOGEVENT_PROVIDER_NAME, EVENTLOG_INFORMATION_TYPE, MSG_INFORMATIONAL, LogMsg);
-    2:
-      WriteEventLog(LOGEVENT_PROVIDER_NAME, EVENTLOG_WARNING_TYPE,     MSG_WARNING,       LogMsg);
-    3:
-      WriteEventLog(LOGEVENT_PROVIDER_NAME, EVENTLOG_ERROR_TYPE,       MSG_ERROR,         LogMsg);
-    else
-      // TODO: Exception/Error ?
+    ViaThinkSoftSimpleLogEvent_TLB.Success:
+      WriteEventLog(SourceName, EVENTLOG_SUCCESS,          MSG_SUCCESS,       LogMsg);
+    ViaThinkSoftSimpleLogEvent_TLB.Informational:
+      WriteEventLog(SourceName, EVENTLOG_INFORMATION_TYPE, MSG_INFORMATIONAL, LogMsg);
+    ViaThinkSoftSimpleLogEvent_TLB.Warning:
+      WriteEventLog(SourceName, EVENTLOG_WARNING_TYPE,     MSG_WARNING,       LogMsg);
+    ViaThinkSoftSimpleLogEvent_TLB.Error:
+      WriteEventLog(SourceName, EVENTLOG_ERROR_TYPE,       MSG_ERROR,         LogMsg);
   end;
 end;
 

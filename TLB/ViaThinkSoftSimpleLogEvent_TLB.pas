@@ -1,46 +1,48 @@
 unit ViaThinkSoftSimpleLogEvent_TLB;
 
 // ************************************************************************ //
-// WARNING                                                                    
-// -------                                                                    
-// The types declared in this file were generated from data read from a       
-// Type Library. If this type library is explicitly or indirectly (via        
-// another type library referring to this type library) re-imported, or the   
-// 'Refresh' command of the Type Library Editor activated while editing the   
-// Type Library, the contents of this file will be regenerated and all        
-// manual modifications will be lost.                                         
+// WARNUNG
+// -------
+// Die in dieser Datei deklarierten Typen wurden aus Daten einer Typbibliothek
+// generiert. Wenn diese Typbibliothek explizit oder indirekt (über eine
+// andere Typbibliothek) reimportiert wird oder wenn der Befehl
+// 'Aktualisieren' im Typbibliotheks-Editor während des Bearbeitens der
+// Typbibliothek aktiviert ist, wird der Inhalt dieser Datei neu generiert und
+// alle manuell vorgenommenen Änderungen gehen verloren.
 // ************************************************************************ //
 
-// $Rev: 8291 $
-// File generated on 29.04.2020 21:22:15 from Type Library described below.
+// $Rev: 52393 $
+// Datei am 30.04.2020 23:02:59 erzeugt aus der unten beschriebenen Typbibliothek.
 
 // ************************************************************************  //
-// Type Lib: D:\VtsEventLog\ComTest2\ViaThinkSoftSimpleLogEvent.tlb (1)
+// Typbib.: C:\Users\DELL User\SVN\SimpleLogEvent\trunk\TLB\ViaThinkSoftSimpleLogEvent (1)
 // LIBID: {D7654BA7-41D0-4FF9-8543-C3A4DA936856}
 // LCID: 0
-// Helpfile: 
-// HelpString: ViaThinkSoftSimpleLogEvent Library
-// DepndLst: 
+// Hilfedatei:
+// Hilfe-String: ViaThinkSoftSimpleLogEvent Library
+// Liste der Abhäng.:
 //   (1) v2.0 stdole, (C:\Windows\SysWOW64\stdole2.tlb)
+// SYS_KIND: SYS_WIN32
 // ************************************************************************ //
-{$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
+{$TYPEDADDRESS OFF} // Unit muss ohne Typüberprüfung für Zeiger compiliert werden.
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
 {$VARPROPSETTER ON}
+{$ALIGN 4}
+
 interface
 
-uses Windows, ActiveX, Classes, StdVCL, Variants;
-  
+uses Winapi.Windows, System.Classes, System.Variants, System.Win.StdVCL, Vcl.Graphics, Vcl.OleServer, Winapi.ActiveX;
 
 // *********************************************************************//
-// GUIDS declared in the TypeLibrary. Following prefixes are used:        
-//   Type Libraries     : LIBID_xxxx                                      
-//   CoClasses          : CLASS_xxxx                                      
-//   DISPInterfaces     : DIID_xxxx                                       
-//   Non-DISP interfaces: IID_xxxx                                        
+// In der Typbibliothek deklarierte GUIDS. Die folgenden Präfixe werden verwendet:
+//   Typbibliotheken      : LIBID_xxxx
+//   CoClasses            : CLASS_xxxx
+//   DISPInterfaces       : DIID_xxxx
+//   Nicht-DISP-Interfaces: IID_xxxx
 // *********************************************************************//
 const
-  // TypeLibrary Major and minor versions
+  // Haupt- und Nebenversionen der Typbibliothek
   ViaThinkSoftSimpleLogEventMajorVersion = 1;
   ViaThinkSoftSimpleLogEventMinorVersion = 0;
 
@@ -48,17 +50,30 @@ const
 
   IID_IViaThinkSoftSimpleEventLog: TGUID = '{4094657E-8199-460F-A3DD-5BB63B6B0F65}';
   CLASS_ViaThinkSoftSimpleEventLog: TGUID = '{E4270053-A217-498C-B395-9EF33187E8C2}';
+
+// *********************************************************************//
+// Deklaration von in der Typbibliothek definierten Aufzählungen
+// *********************************************************************//
+// Konstanten für enum LogEventType
+type
+  LogEventType = TOleEnum;
+const
+  Success = $00000000;
+  Informational = $00000001;
+  Warning = $00000002;
+  Error = $00000003;
+
 type
 
 // *********************************************************************//
-// Forward declaration of types defined in TypeLibrary                    
+// Forward-Deklaration von in der Typbibliothek definierten Typen
 // *********************************************************************//
   IViaThinkSoftSimpleEventLog = interface;
   IViaThinkSoftSimpleEventLogDisp = dispinterface;
 
 // *********************************************************************//
-// Declaration of CoClasses defined in Type Library                       
-// (NOTE: Here we map each CoClass to its Default Interface)              
+// Deklaration von in der Typbibliothek definierten CoClasses
+// (HINWEIS: Hier wird jede CoClass ihrem Standard-Interface zugewiesen)
 // *********************************************************************//
   ViaThinkSoftSimpleEventLog = IViaThinkSoftSimpleEventLog;
 
@@ -70,7 +85,8 @@ type
 // *********************************************************************//
   IViaThinkSoftSimpleEventLog = interface(IDispatch)
     ['{4094657E-8199-460F-A3DD-5BB63B6B0F65}']
-    procedure LogEvent(EventType: Integer; const LogMsg: WideString); safecall;
+    procedure LogEvent(const SourceName: WideString; EventType: LogEventType;
+                       const LogMsg: WideString); safecall;
   end;
 
 // *********************************************************************//
@@ -80,15 +96,16 @@ type
 // *********************************************************************//
   IViaThinkSoftSimpleEventLogDisp = dispinterface
     ['{4094657E-8199-460F-A3DD-5BB63B6B0F65}']
-    procedure LogEvent(EventType: Integer; const LogMsg: WideString); dispid 201;
+    procedure LogEvent(const SourceName: WideString; EventType: LogEventType;
+                       const LogMsg: WideString); dispid 201;
   end;
 
 // *********************************************************************//
-// The Class CoViaThinkSoftSimpleEventLog provides a Create and CreateRemote method to          
-// create instances of the default interface IViaThinkSoftSimpleEventLog exposed by              
-// the CoClass ViaThinkSoftSimpleEventLog. The functions are intended to be used by             
-// clients wishing to automate the CoClass objects exposed by the         
-// server of this typelibrary.                                            
+// Die Klasse CoViaThinkSoftSimpleEventLog stellt die Methoden Create und CreateRemote zur
+// Verfügung, um Instanzen des Standard-Interface IViaThinkSoftSimpleEventLog, dargestellt
+// von CoClass ViaThinkSoftSimpleEventLog, zu erzeugen. Diese Funktionen können
+// von einem Client verwendet werden, der die CoClasses automatisieren
+// will, die von dieser Typbibliothek dargestellt werden.
 // *********************************************************************//
   CoViaThinkSoftSimpleEventLog = class
     class function Create: IViaThinkSoftSimpleEventLog;
@@ -97,7 +114,7 @@ type
 
 implementation
 
-uses ComObj;
+uses System.Win.ComObj;
 
 class function CoViaThinkSoftSimpleEventLog.Create: IViaThinkSoftSimpleEventLog;
 begin
@@ -110,3 +127,4 @@ begin
 end;
 
 end.
+

@@ -7,6 +7,6 @@ const LOGEVENT_MSG_INFORMATIONAL = 1
 const LOGEVENT_MSG_WARNING       = 2
 const LOGEVENT_MSG_ERROR         = 3
 
-objMyObject.LogEvent LOGEVENT_MSG_WARNING, "This is a test warning written by VBS"
+objMyObject.LogEvent "MySourceName", LOGEVENT_MSG_WARNING, "This is a test warning written by VBS"
 
 MsgBox "OK"

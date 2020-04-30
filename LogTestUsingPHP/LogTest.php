@@ -27,10 +27,10 @@ try {
 }
 
 if (PHP_INT_SIZE == 8) {
-	$x->LogEvent(LOGEVENT_MSG_WARNING, 'This is a test warning written by 64 bit PHP');
+	$x->LogEvent('MySourceName', LOGEVENT_MSG_WARNING, 'This is a test warning written by 64 bit PHP');
 } else if (PHP_INT_SIZE == 4) {
-	$x->LogEvent(LOGEVENT_MSG_WARNING, 'This is a test warning written by 32 bit PHP');
+	$x->LogEvent('MySourceName', LOGEVENT_MSG_WARNING, 'This is a test warning written by 32 bit PHP');
 } else {
 	// Should never happen!
-	$x->LogEvent(LOGEVENT_MSG_WARNING, 'This is a test warning written by whatever-bit PHP');
+	$x->LogEvent('MySourceName', LOGEVENT_MSG_WARNING, 'This is a test warning written by whatever-bit PHP');
 }
