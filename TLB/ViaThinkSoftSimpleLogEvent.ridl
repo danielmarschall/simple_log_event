@@ -6,7 +6,7 @@
 // Änderungen. Wenn Sie aber Änderungen mit dem Editor vornehmen, wird diese
 // Datei neu erzeugt und Kommentare oder Formatänderungen gehen verloren.
 // ************************************************************************ //
-// Datei erzeugt am 30.04.2020 23:03:28 (- $Rev: 12980 $, 10609955).
+// Datei erzeugt am 03.05.2020 21:20:06 (- $Rev: 12980 $, 10716816).
 
 [
   uuid(D7654BA7-41D0-4FF9-8543-C3A4DA936856),
@@ -45,6 +45,8 @@ library ViaThinkSoftSimpleLogEvent
   {
     [id(0x000000C9)]
     HRESULT _stdcall LogEvent([in] BSTR SourceName, [in] enum LogEventType EventType, [in] BSTR LogMsg);
+    [id(0x000000CA)]
+    HRESULT _stdcall LogSimulate([in] BSTR SourceName, [in] enum LogEventType EventType, [in] BSTR LogMsg, [out] VARIANT* Reason);
   };
 
   [

@@ -12,7 +12,7 @@ unit ViaThinkSoftSimpleLogEvent_TLB;
 // ************************************************************************ //
 
 // $Rev: 52393 $
-// Datei am 30.04.2020 23:02:59 erzeugt aus der unten beschriebenen Typbibliothek.
+// Datei am 03.05.2020 21:20:05 erzeugt aus der unten beschriebenen Typbibliothek.
 
 // ************************************************************************  //
 // Typbib.: C:\Users\DELL User\SVN\SimpleLogEvent\trunk\TLB\ViaThinkSoftSimpleLogEvent (1)
@@ -87,6 +87,8 @@ type
     ['{4094657E-8199-460F-A3DD-5BB63B6B0F65}']
     procedure LogEvent(const SourceName: WideString; EventType: LogEventType;
                        const LogMsg: WideString); safecall;
+    procedure LogSimulate(const SourceName: WideString; EventType: LogEventType;
+                          const LogMsg: WideString; out Reason: OleVariant); safecall;
   end;
 
 // *********************************************************************//
@@ -98,6 +100,8 @@ type
     ['{4094657E-8199-460F-A3DD-5BB63B6B0F65}']
     procedure LogEvent(const SourceName: WideString; EventType: LogEventType;
                        const LogMsg: WideString); dispid 201;
+    procedure LogSimulate(const SourceName: WideString; EventType: LogEventType;
+                          const LogMsg: WideString; out Reason: OleVariant); dispid 202;
   end;
 
 // *********************************************************************//

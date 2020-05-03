@@ -12,11 +12,13 @@ type
   protected
     procedure LogEvent(const SourceName: WideString; EventType: LogEventType; const LogMsg: WideString);
           safecall;
+    procedure LogSimulate(const SourceName: WideString; EventType: LogEventType; const LogMsg: WideString;
+          out Reason: OleVariant); safecall;
   end;
 
 implementation
 
-uses ComServ, Windows;
+uses ComServ, Windows, SysUtils;
 
 const
   MSG_SUCCESS        = $20000000;
@@ -24,17 +26,20 @@ const
   MSG_WARNING        = $A0000002;
   MSG_ERROR          = $E0000003;
 
-function WriteEventLog(AProvider: string; AEventType: word; AEventId: Cardinal; AEntry: string): boolean;
+procedure WriteEventLog(AProvider: string; AEventType: word; AEventId: Cardinal; AEntry: string);
 var
-  EventLog: integer;
+  EventLog: THandle;
   P: Pointer;
 begin
-  Result := False;
   P := PChar(AEntry);
   EventLog := RegisterEventSource(nil, PChar(AProvider));
+  if EventLog = 0 then
+  begin
+    raise Exception.CreateFmt('RegisterEventSource failed with error code %d', [GetLastError]);
+  end;
   if EventLog <> 0 then
   try
-    ReportEvent(EventLog, // event log handle
+    if not ReportEvent(EventLog, // event log handle
           AEventType,     // event type
           0,              // category zero
           AEventId,       // event identifier
@@ -42,8 +47,10 @@ begin
           1,              // one substitution string
           0,              // no data
           @P,             // pointer to string array
-          nil);           // pointer to data
-    Result := True;
+          nil) then       // pointer to data
+    begin
+      raise Exception.CreateFmt('ReportEvent failed with error code %d', [GetLastError]);
+    end;
   finally
     DeregisterEventSource(EventLog);
   end;
@@ -61,6 +68,41 @@ begin
       WriteEventLog(SourceName, EVENTLOG_WARNING_TYPE,     MSG_WARNING,       LogMsg);
     ViaThinkSoftSimpleLogEvent_TLB.Error:
       WriteEventLog(SourceName, EVENTLOG_ERROR_TYPE,       MSG_ERROR,         LogMsg);
+    else
+    begin
+      raise Exception.CreateFmt('ViaThinkSoftSimpleEventLog.LogEvent: Unexpected event type %d', [Ord(EventType)]);
+    end;
+  end;
+end;
+
+procedure TViaThinkSoftSimpleEventLog.LogSimulate(const SourceName: WideString; EventType: LogEventType;
+          const LogMsg: WideString; out Reason: OleVariant);
+var
+  EventLog: THandle;
+begin
+  try
+    Reason := '';
+    if (EventType < 0) or (EventType > ViaThinkSoftSimpleLogEvent_TLB.Error) then
+    begin
+      Reason := Format('Unexpected event type %d', [Ord(EventType)]);
+      Exit;
+    end;
+
+    EventLog := RegisterEventSource(nil, PChar(SourceName));
+    if EventLog = 0 then
+    begin
+      Reason := Format('RegisterEventSource failed with error code %d', [GetLastError]);
+      Exit;
+    end
+    else
+    begin
+      DeregisterEventSource(EventLog);
+    end;
+  except
+    on E: Exception do
+    begin
+      Reason := Format('Unexpected error: %s', [e.Message]);
+    end;
   end;
 end;
 
