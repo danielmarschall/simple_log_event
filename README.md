@@ -31,10 +31,10 @@ Installation
 
 Copy the following files in a path of your choice:
 
-	Register.bat
-	UnRegister.bat
-	ViaThinkSoftSimpleLogEvent32.dll
-	ViaThinkSoftSimpleLogEvent64.dll
+- Register.bat
+- UnRegister.bat
+- ViaThinkSoftSimpleLogEvent32.dll
+- ViaThinkSoftSimpleLogEvent64.dll
 
 Run Register.bat as administrator (right click on the batch file).
 
